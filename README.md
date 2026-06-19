@@ -95,6 +95,14 @@ class ChronoSimActor:
 
 **AMD GPU selection** for the **learner** process should use **`ROCR_VISIBLE_DEVICES`**, not `CUDA_VISIBLE_DEVICES`. When starting Ray manually, pass **`ray start --num-gpus=N`** (with `N` matching visible devices); otherwise Ray may schedule **zero** GPUs even when hardware is present.
 
+### Reviewer reproduction (generic AMD Linux: CPUs + Instinct)
+
+1. Install **ROCm** and build **PyChrono** with **Python + robot**; set **`CHRONO_DATA_DIR`** and prepend the Chrono Python path to **`PYTHONPATH`** (see [Chrono Python install](https://api.projectchrono.org/module_python_installation.html)).
+2. Clone this branch, prepend **`PYTHONPATH=$PWD`**, create a venv, `pip install gymnasium numpy`, run **`python3 gym_chrono/test/smoke_viper_walk.py`**.
+3. For **Ray + Instinct**: export **`ROCR_VISIBLE_DEVICES`**, set **`RAY_EXPERIMENTAL_NOSET_HIP_VISIBLE_DEVICES`** and **`RAY_EXPERIMENTAL_NOSET_ROCR_VISIBLE_DEVICES`** before `import ray`, run **`ray start --head --num-gpus=N`**, then run **`python3 playground/reviewer_ray_chrono_smoke.py`** (minimal two-actor smoke; requires `ray` installed).
+
+Full step-by-step reproduction (shell + inline Python) is in the **“Reviewer reproduction”** section of **[PR #19](https://github.com/projectchrono/gym-chrono/pull/19)** on GitHub.
+
 ## Downloading data files
 Before you begin the installation process, you will need to download the `data` folder containing the simulation assets and place it in the right place:
 1) Download the data files [here](https://drive.google.com/drive/folders/1u4nwAlpPXtgkSJeBLlSM9B_utEoUIY41?usp=drive_link), unzip if necessary, you should obtain a folder named `data`.
